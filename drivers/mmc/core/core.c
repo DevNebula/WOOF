@@ -69,6 +69,7 @@ static struct workqueue_struct *workqueue;
 struct workqueue_struct *stats_workqueue = NULL;
 static const unsigned freqs[] = { 400000, 300000, 200000, 100000 };
 
+
 /*
  * Enabling software CRCs on the data blocks can be a significant (30%)
  * performance cost, and for other reasons may not always be desired.
