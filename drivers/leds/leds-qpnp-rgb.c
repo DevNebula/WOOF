@@ -2551,7 +2551,9 @@ static ssize_t bln_coeff_div_dump(struct device *dev,
       if (input < 0 || input > 20)
             input = 0;
 
-      rgb_coeff_divider = input + 1;
+      if (input < 20) {
+	      rgb_coeff_divider = input + 1;
+      } else rgb_coeff_divider = 500;
 
       return count;
 }
