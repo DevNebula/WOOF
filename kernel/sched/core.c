@@ -4981,6 +4981,10 @@ void sched_show_task(struct task_struct *p)
 	unsigned state;
 
 	state = p->state ? __ffs(p->state) + 1 : 0;
+	if (!try_get_task_stack(p))
+		return;
+	if (state)
+		state = __ffs(state) + 1;
 	printk(KERN_INFO "%-15.15s %c", p->comm,
 		state < sizeof(stat_nam) - 1 ? stat_nam[state] : '?');
 #if BITS_PER_LONG == 32
@@ -5006,6 +5010,7 @@ void sched_show_task(struct task_struct *p)
 
 	print_worker_info(KERN_INFO, p);
 	show_stack(p, NULL);
+	put_task_stack(p);
 }
 
 void show_state_filter(unsigned long state_filter)
