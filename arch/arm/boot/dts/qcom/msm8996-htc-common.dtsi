@@ -104,4 +104,16 @@
 		reg-names = "htc_mnemosyne_res";
 	};
 
+	qcom,bcl {
+		/delete-property/ qcom,bcl-hotplug-list;
+		/delete-property/ qcom,bcl-soc-hotplug-list;
+		qcom,ibat-monitor {
+			qcom,mitigation-freq-khz = <1132800>;
+		};
+	};
+};
+
+&wdog {
+	qcom,bark-time = <18000>;
+	qcom,pet-time = <8000>;
 };
