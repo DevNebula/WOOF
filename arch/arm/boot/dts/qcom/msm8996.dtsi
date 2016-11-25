@@ -505,8 +505,10 @@
 			<&dma_blsp1 23 32 0x20000020 0x20>;
 		dma-names = "tx", "rx";
 		qcom,master-id = <86>;
-		qcom,clk-freq-out = <400000>;
+		qcom,clk-freq-out = <100000>;	/* Yangfb modyfied, old value is 400000*/
 		qcom,clk-freq-in  = <19200000>;
+		qcom,fs-clk-div =<104>;/* Yangfb modyfied*/
+		qcom,high-time-clk-div=<82>;/* Yangfb modyfied*/
 		clock-names = "iface_clk", "core_clk";
 		clocks = <&clock_gcc clk_gcc_blsp1_ahb_clk>,
 			 <&clock_gcc clk_gcc_blsp1_qup6_i2c_apps_clk>;
@@ -537,6 +539,27 @@
 		pinctrl-1 = <&i2c_7_sleep>;
 	};
 
+	i2c_3: i2c@7577000 { /* BLSP2 QUP1 */ //////////////here is BLSP1 QUP2 (0-5)
+			compatible = "qcom,i2c-msm-v2";
+			#address-cells = <1>;
+			#size-cells = <0>;
+			reg-names = "qup_phys_addr";
+			reg = <0x7577000 0x1000>;
+			interrupt-names = "qup_irq";
+			interrupts = <0 97 0>;
+			dmas = <&dma_blsp1 16 32 0x20000020 0x20>,
+			<&dma_blsp1 17 32 0x20000020 0x20>;
+			dma-names = "tx", "rx";
+			qcom,master-id = <86>;
+			qcom,clk-freq-out = <100000>;
+			qcom,clk-freq-in = <19200000>;
+			qcom,fs-clk-div =<104>;
+			qcom,high-time-clk-div=<82>;
+			clock-names = "iface_clk", "core_clk";
+			clocks = <&clock_gcc clk_gcc_blsp1_ahb_clk>,
+			<&clock_gcc clk_gcc_blsp1_qup3_i2c_apps_clk>;
+			pinctrl-names = "i2c_active", "i2c_sleep";
+	};
 	i2c_8: i2c@75b6000 { /* BLSP2 QUP2 */
 		compatible = "qcom,i2c-msm-v2";
 		#address-cells = <1>;
@@ -566,14 +589,15 @@
 		    <0x7544000 0x2b000>;
 		status = "disabled";
 		reg-names = "core_mem", "bam_mem";
-		interrupt-names = "core_irq", "bam_irq";
+		interrupt-names = "core_irq", "bam_irq", "wakeup_irq";
 		#address-cells = <0>;
 		interrupt-parent = <&blsp1_uart2>;  /* BLSP2 at GPIO table */
-		interrupts = <0 1>;
+		interrupts = <0 1 2>;
 		#interrupt-cells = <1>;
 		interrupt-map-mask = <0xffffffff>;
 		interrupt-map = <0 &intc 0 0 108 0
-			    1 &intc 0 0 238 0>;
+			    1 &intc 0 0 238 0
+			    2 &tlmm 42 0>;
 
 		qcom,inject-rx-on-wakeup;
 		qcom,rx-char-to-inject = <0xFD>;
@@ -985,6 +1009,8 @@
 		#interrupt-cells = <1>;
 		interrupt-parent = <&tlmm>;
 		qcom,gpio-connect = <&tlmm 54 0>;
+		pinctrl-names = "default";
+		pinctrl-0 = <&wcd_intr_default>;
 	};
 
 	clock_audio: audio_ext_clk {
@@ -2232,6 +2258,7 @@
 					0x79 0x0C
 					0x21 0x10
 					0x14 0x9C
+					0x80 0x04
 					0x9F 0x1C
 					0x00 0x18>;
 		htc,usb-phy-always-on = <1>;
@@ -2952,13 +2979,13 @@
 	mitigation_profile0: qcom,limit_info-0 {
 		qcom,temperature-sensor = <&sensor_information4>;
 		qcom,boot-frequency-mitigate;
-		/*qcom,hotplug-mitigation-enable;*/
+		qcom,hotplug-mitigation-enable;
 	};
 
 	mitigation_profile1: qcom,limit_info-1 {
 		qcom,temperature-sensor = <&sensor_information6>;
 		qcom,boot-frequency-mitigate;
-		/*qcom,hotplug-mitigation-enable;*/
+		qcom,hotplug-mitigation-enable;
 	};
 
 	mitigation_profile2: qcom,limit_info-2 {
@@ -3030,13 +3057,15 @@
 		qcom,bcl-enable;
 		qcom,bcl-framework-interface;
 		qcom,bcl-freq-control-list = <&CPU2 &CPU3>;
+		qcom,bcl-hotplug-list = <&CPU2 &CPU3>;
+		qcom,bcl-soc-hotplug-list = <&CPU3>;
 		qcom,ibat-monitor {
 			qcom,low-threshold-uamp = <3400000>;
 			qcom,high-threshold-uamp = <4200000>;
-			qcom,mitigation-freq-khz = <1324800>;
+			qcom,mitigation-freq-khz = <576000>;
 			qcom,vph-high-threshold-uv = <3500000>;
 			qcom,vph-low-threshold-uv = <3300000>;
-			qcom,soc-low-threshold = <0>;
+			qcom,soc-low-threshold = <5>;
 			qcom,thermal-handle = <&msm_thermal_freq>;
 		};
 	};
