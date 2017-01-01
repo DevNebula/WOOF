@@ -1339,7 +1339,7 @@ static int task_numa_migrate(struct task_struct *p)
 		.p = p,
 
 		.src_cpu = task_cpu(p),
-		.src_nid = cpu_to_node(task_cpu(p)),
+		.src_nid = task_node(p),
 
 		.imbalance_pct = 112,
 
@@ -1919,6 +1919,9 @@ void task_numa_fault(int last_cpupid, int mem_node, int pages, int flags)
 	if (time_after(jiffies, p->numa_migrate_retry))
 		numa_migrate_preferred(p);
 
+	if (migrated)
+		p->numa_pages_migrated += pages;
+
 	p->numa_faults_buffer_memory[task_faults_idx(mem_node, priv)] += pages;
 	p->numa_faults_buffer_cpu[task_faults_idx(cpu_node, priv)] += pages;
 	p->numa_faults_locality[local] += pages;
@@ -2136,7 +2139,7 @@ account_entity_dequeue(struct cfs_rq *cfs_rq, struct sched_entity *se)
 }
 
 #ifdef CONFIG_FAIR_GROUP_SCHED
-#ifdef CONFIG_SMP
+# ifdef CONFIG_SMP
 static inline long calc_tg_weight(struct task_group *tg, struct cfs_rq *cfs_rq)
 {
 	long tg_weight;
@@ -2171,12 +2174,12 @@ static long calc_cfs_shares(struct cfs_rq *cfs_rq, struct task_group *tg)
 
 	return shares;
 }
-#else 
+# else /* CONFIG_SMP */
 static inline long calc_cfs_shares(struct cfs_rq *cfs_rq, struct task_group *tg)
 {
 	return tg->shares;
 }
-#endif 
+# endif /* CONFIG_SMP */
 static void reweight_entity(struct cfs_rq *cfs_rq, struct sched_entity *se,
 			    unsigned long weight)
 {
@@ -4927,11 +4930,9 @@ static inline int
 normalize_energy(int energy_diff)
 {
 	u32 normalized_nrg;
-
-
-#ifdef CONFIG_SCHED_DEBUG
 	int max_delta;
 
+#ifdef CONFIG_SCHED_DEBUG
 	/* Check for boundaries */
 	max_delta  = schedtune_target_nrg.max_power;
 	max_delta -= schedtune_target_nrg.min_power;
@@ -6446,9 +6447,13 @@ int can_migrate_task(struct task_struct *p, struct lb_env *env)
 
 	lockdep_assert_held(&env->src_rq->lock);
 
-	if (over_schedule_budget(env->dst_cpu))
-		return 0;
-
+	/*
+	 * We do not migrate tasks that are:
+	 * 1) throttled_lb_pair, or
+	 * 2) cannot be migrated to this CPU due to cpus_allowed, or
+	 * 3) running (obviously), or
+	 * 4) are cache-hot on their current CPU.
+	 */
 	if (throttled_lb_pair(task_group(p), env->src_cpu, env->dst_cpu))
 		return 0;
 
@@ -7961,7 +7966,6 @@ redo:
 	env.src_rq = busiest;
 
 	ld_moved = 0;
-
 	if (busiest->nr_running > 1) {
 		/*
 		 * Attempt to move tasks. If find_busiest_group has found
@@ -8231,9 +8235,9 @@ static int idle_balance(struct rq *this_rq)
 		goto out;
 	}
 
-	if (over_schedule_budget(this_cpu))
-		goto out;
-
+	/*
+	 * Drop the rq->lock, but keep IRQ/preempt disabled.
+	 */
 	raw_spin_unlock(&this_rq->lock);
 
 	/*
@@ -8681,8 +8685,7 @@ static void nohz_idle_balance(struct rq *this_rq, enum cpu_idle_type idle)
 		goto end;
 
 	for_each_cpu(balance_cpu, nohz.idle_cpus_mask) {
-		if (balance_cpu == this_cpu || !idle_cpu(balance_cpu) ||
-				over_schedule_budget(balance_cpu))
+		if (balance_cpu == this_cpu || !idle_cpu(balance_cpu))
 			continue;
 
 		/*
@@ -8833,9 +8836,6 @@ void trigger_load_balance(struct rq *rq)
 {
 	/* Don't need to rebalance while attached to NULL domain */
 	if (unlikely(on_null_domain(rq)))
-		return;
-
-	if (over_schedule_budget(cpu_of(rq)))
 		return;
 
 	if (time_after_eq(jiffies, rq->next_balance))

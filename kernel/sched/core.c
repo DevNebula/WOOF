@@ -656,24 +656,26 @@ void resched_cpu(int cpu)
 
 #ifdef CONFIG_SMP
 #ifdef CONFIG_NO_HZ_COMMON
-
-extern int over_schedule_budget(int cpu);
+/*
+ * In the semi idle case, use the nearest busy cpu for migrating timers
+ * from an idle cpu.  This is good for power-savings.
+ *
+ * We don't do similar optimization for completely idle system, as
+ * selecting an idle cpu will add more delays to the timers than intended
+ * (as that cpu's timer base may not be uptodate wrt jiffies etc).
+ */
 int get_nohz_timer_target(int pinned)
 {
 	int cpu = smp_processor_id();
 	int i;
 	struct sched_domain *sd;
 
-	if (pinned || !get_sysctl_timer_migration() || (!over_schedule_budget(cpu) && !idle_cpu(cpu)))
+	if (pinned || !get_sysctl_timer_migration() || !idle_cpu(cpu))
 		return cpu;
 
 	rcu_read_lock();
 	for_each_domain(cpu, sd) {
-
 		for_each_cpu(i, sched_domain_span(sd)) {
-			if (over_schedule_budget(i))
-				continue;
-
 			if (!idle_cpu(i)) {
 				cpu = i;
 				goto unlock;
