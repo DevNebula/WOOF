@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Path to build your kernel
-  k=~/Documents/HTC10_PME_kernel_msm8996
+  k=~/Documents/HelixKernel_EAS
 # Directory for the any kernel updater
   t=$k/packages
 # Date to add to zip
