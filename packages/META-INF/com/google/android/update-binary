@@ -144,7 +144,7 @@ fi;
 
 
 if [ "$(file_getprop /tmp/anykernel/anykernel.sh do.cleanup)" == 1 ]; then
-ui_print "[Nebula] Cleaning up...";
+ui_print "Cleaning up...";
   rm -rf /tmp/anykernel;
 fi;
 
