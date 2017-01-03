@@ -2,6 +2,7 @@
 
 on boot
     # Update foreground and background cpusets
+	write /dev/cpuset/top-app/cpus 0-3
     write /dev/cpuset/foreground/cpus 0-3
     write /dev/cpuset/foreground/boost/cpus 2-3
     write /dev/cpuset/background/cpus 0-1
@@ -37,14 +38,20 @@ on property:sys.boot_completed=1
     write /sys/kernel/msm_thermal/enabled 1
 	
 	write /dev/stune/cgroup.clone_children 0
-	write /dev/stune/cgroup.sane_behavior 1
+	write /dev/stune/cgroup.sane_behavior 0
 	write /dev/stune/notify_on_release 0
 	write /dev/stune/schedtune.boost 0
-	write /dev/stune/schedtune.prefer_idle 1
+	write /dev/stune/schedtune.prefer_idle 0
+	
 	write /dev/stune/foreground/cgroup.clone_children 0
 	write /dev/stune/foreground/notify_on_release 0
-	write /dev/stune/foreground/schedtune.boost 15
-	write /dev/stune/foreground/schedtune.prefer_idle 0
+	write /dev/stune/foreground/schedtune.boost 0
+	write /dev/stune/foreground/schedtune.prefer_idle 1
+	
+	write /dev/stune/top-app/cgroup.clone_children 0
+	write /dev/stune/top-app/notify_on_release 0
+	write /dev/stune/top-app/schedtune.boost 10
+	write /dev/stune/top-app/schedtune.prefer_idle 1
 	
 	write /proc/sys/kernel/sched_child_runs_first 0
 	write /proc/sys/kernel/sched_cstate_aware 1
@@ -65,7 +72,7 @@ on property:sys.boot_completed=1
 	write /proc/sys/kernel/sched_use_walt_task_util 1
 	write /proc/sys/kernel/sched_wakeup_granularity_ns 250000
 	write /proc/sys/kernel/sched_walt_cpu_high_irqload 10000000
-	write /proc/sys/kernel/sched_walt_init_task_load_pct 10
+	write /proc/sys/kernel/sched_walt_init_task_load_pct 20
 	
 	chown system /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
 	chown system /sys/devices/system/cpu/cpu2/cpufreq/scaling_governor
