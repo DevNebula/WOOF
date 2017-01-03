@@ -20,6 +20,7 @@
 # Setup output directory
     mkdir -p "out/$c"
     cp -R "$t/modules" out/$c
+    cp -R "$t/system" out/$c
     cp -R "$t/META-INF" out/$c
     cp -R "$t/patch" out/$c
     cp -R "$t/ramdisk" out/$c

@@ -142,6 +142,16 @@ ui_print "Pushing System Blobs...";
 		mount -o remount,ro -t auto /system;		
 fi;
 
+if [ "$(file_getprop /tmp/anykernel/anykernel.sh do.eas_support)" == 1 ]; then
+ui_print "Installing EAS ROM Support...";
+	ui_print " ";
+	mount -o remount,rw -t auto /system;
+		cp -rf /tmp/anykernel/system/lib/* /system/lib/;
+		cp -rf /tmp/anykernel/system/lib64/* /system/lib64/;
+		cp -rf /tmp/anykernel/system/bin/* /system/bin/;
+		mount -o remount,ro -t auto /system;		
+fi;
+
 
 if [ "$(file_getprop /tmp/anykernel/anykernel.sh do.cleanup)" == 1 ]; then
 ui_print "Cleaning up...";

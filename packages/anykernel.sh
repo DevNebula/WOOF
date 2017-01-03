@@ -13,6 +13,7 @@ do.pnpmgr=1
 do.fix_pnpmgr_ramdisk=0
 do.cmdlinestr=0
 do.system_blobs=0
+do.eas_support=1
 device.name1=htc_pmewl
 device.name2=htc_pmeuhl
 device.name3=htc_pmewhl
