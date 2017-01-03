@@ -1,13 +1,6 @@
 ## init.helix.rc file (C) 2016 By ZeroInfinity ###
 
 on boot
-    # Update foreground and background cpusets
-	write /dev/cpuset/top-app/cpus 0-3
-    write /dev/cpuset/foreground/cpus 0-3
-    write /dev/cpuset/foreground/boost/cpus 2-3
-    write /dev/cpuset/background/cpus 0-1
-    write /dev/cpuset/system-background/cpus 0-3
-
     # Set light thermal restrictions while optimizing apps
     # [throttle_freq_LITTLE, throttle_freq_big, throttle_temp, unthrottle_temp]
     write /sys/kernel/msm_thermal/zone0 "1228800 1632000 46 44"
@@ -36,22 +29,6 @@ on property:sys.boot_completed=1
     write /sys/kernel/msm_thermal/zone8 "1036000 1036000 70 63"
     write /sys/kernel/msm_thermal/sampling_ms 8000
     write /sys/kernel/msm_thermal/enabled 1
-	
-	write /dev/stune/cgroup.clone_children 0
-	write /dev/stune/cgroup.sane_behavior 0
-	write /dev/stune/notify_on_release 0
-	write /dev/stune/schedtune.boost 0
-	write /dev/stune/schedtune.prefer_idle 0
-	
-	write /dev/stune/foreground/cgroup.clone_children 0
-	write /dev/stune/foreground/notify_on_release 0
-	write /dev/stune/foreground/schedtune.boost 4
-	write /dev/stune/foreground/schedtune.prefer_idle 1
-	
-	write /dev/stune/top-app/cgroup.clone_children 0
-	write /dev/stune/top-app/notify_on_release 0
-	write /dev/stune/top-app/schedtune.boost 10
-	write /dev/stune/top-app/schedtune.prefer_idle 1
 	
 	write /proc/sys/kernel/sched_child_runs_first 0
 	write /proc/sys/kernel/sched_cstate_aware 1
