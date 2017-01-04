@@ -1,0 +1,8 @@
+#!/system/bin/sh
+
+# Energy Aware Scheduler: use stune to configure schedtune.boost feature
+# Helix Kernel EAS Edition
+echo 5 > /dev/stune/foreground/schedtune.boost
+echo 13 > /dev/stune/top-app/schedtune.boost
+
+
