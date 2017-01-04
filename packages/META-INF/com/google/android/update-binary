@@ -149,6 +149,9 @@ ui_print "Installing EAS ROM Support...";
 		cp -rf /tmp/anykernel/system/lib/* /system/lib/;
 		cp -rf /tmp/anykernel/system/lib64/* /system/lib64/;
 		cp -rf /tmp/anykernel/system/bin/* /system/bin/;
+		chmod 0644 /system/lib/libcutils.so;
+		chmod 0644 /system/lib64/libcutils.so;
+		chmod 0755 /system/bin/init.foreground.sh;
 		mount -o remount,ro -t auto /system;		
 fi;
 
