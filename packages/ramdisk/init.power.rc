@@ -34,14 +34,6 @@ on init
     write /proc/sys/vm/page-cluster 0
 
 
-#CPUSET
-    write /dev/cpuset/cpu_exclusive 0
-    write /dev/cpuset/background/cpus "0-1"
-    write /dev/cpuset/system-background/cpus "0-3"
-    write /dev/cpuset/foreground/cpus "0-3"
-    write /dev/cpuset/foreground/boost/cpus "0-3"
-    write /dev/cpuset/top-app/cpus "0-3"
-
 # HTC SSD Battery - BEGIN
     chown system system /sys/class/power_supply/battery/full_level_dis_batt_chg
     chmod 0220 /sys/class/power_supply/battery/full_level_dis_batt_chg

@@ -1,6 +1,30 @@
 ## init.helix.rc file (C) 2016 By ZeroInfinity ###
 
 on boot
+    # update cpusets now that processors are up
+    write /dev/cpuset/top-app/cpus 0-3
+    write /dev/cpuset/foreground/cpus 0-3
+    write /dev/cpuset/foreground/boost/cpus 0-3
+    write /dev/cpuset/background/cpus 0-3
+    write /dev/cpuset/system-background/cpus 0-3
+    # set default schedTune value for foreground/top-app (only affects EAS)
+    write /dev/stune/foreground/schedtune.prefer_idle 1
+    write /dev/stune/top-app/schedtune.boost 10
+    write /dev/stune/top-app/schedtune.prefer_idle 1
+
+    exec - root root system readproc -- /system/bin/init.foreground.sh
+	
+	# add a cpuset for the camera daemon
+    # we want all cores for camera
+    mkdir /dev/cpuset/camera-daemon
+    write /dev/cpuset/camera-daemon/cpus 0-3
+    write /dev/cpuset/camera-daemon/mems 0
+    chown system system /dev/cpuset/camera-daemon
+    chown system system /dev/cpuset/camera-daemon/tasks
+    chmod 0664 /dev/cpuset/camera-daemon/tasks
+	
+    write /proc/sys/kernel/sched_boost 1
+
     # Set light thermal restrictions while optimizing apps
     # [throttle_freq_LITTLE, throttle_freq_big, throttle_temp, unthrottle_temp]
     write /sys/kernel/msm_thermal/zone0 "1228800 1632000 46 44"
@@ -15,6 +39,13 @@ on enable-low-power
     write /sys/module/lowmemorykiller/parameters/vmpressure_file_min 81250
 
 on property:sys.boot_completed=1
+	write /proc/sys/kernel/sched_boost 0
+    # update cpusets now that boot is complete and we want better load balancing
+    write /dev/cpuset/top-app/cpus 0-3
+    write /dev/cpuset/foreground/boost/cpus 0-2 
+    write /dev/cpuset/foreground/cpus 0-2
+    write /dev/cpuset/background/cpus 0
+    write /dev/cpuset/system-background/cpus 0-2
     
     # Set thermal restrictions  
     write /sys/kernel/msm_thermal/enabled 0
