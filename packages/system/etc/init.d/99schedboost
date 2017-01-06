@@ -5,6 +5,6 @@
 echo 0 > /dev/stune/schedtune.boost #global CFS boost
 echo 0 > /dev/stune/background/schedtune.boost #background cpuset CFS boost
 echo 0 > /dev/stune/foreground/schedtune.boost #foreground cpuset CFS boost
-echo 5 > /dev/stune/top-app/schedtune.boost #top-app cpuset CFS boost
+echo 4 > /dev/stune/top-app/schedtune.boost #top-app cpuset CFS boost
 
 

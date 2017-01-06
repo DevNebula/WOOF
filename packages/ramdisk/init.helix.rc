@@ -63,12 +63,12 @@ on property:sys.boot_completed=1
 	
 	write /proc/sys/kernel/sched_child_runs_first 0
 	write /proc/sys/kernel/sched_cstate_aware 1
-	write /proc/sys/kernel/sched_initial_task_util 10
+	write /proc/sys/kernel/sched_initial_task_util 0
 	write /proc/sys/kernel/sched_is_big_little 1
 	write /proc/sys/kernel/sched_latency_ns 10000000
 	write /proc/sys/kernel/sched_migration_cost_ns 500000
 	write /proc/sys/kernel/sched_min_granularity_ns 900000
-	write /proc/sys/kernel/sched_nr_migrate 48
+	write /proc/sys/kernel/sched_nr_migrate 16
 	write /proc/sys/kernel/sched_rr_timeslice_ms 10
 	write /proc/sys/kernel/sched_rt_period_us 1000000
 	write /proc/sys/kernel/sched_rt_runtime_us 950000
