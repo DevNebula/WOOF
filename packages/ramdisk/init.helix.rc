@@ -25,12 +25,18 @@ on boot
 	
     write /proc/sys/kernel/sched_boost 1
 
-    # Set light thermal restrictions while optimizing apps
-    # [throttle_freq_LITTLE, throttle_freq_big, throttle_temp, unthrottle_temp]
-    write /sys/kernel/msm_thermal/zone0 "1228800 1632000 46 44"
-    write /sys/kernel/msm_thermal/zone1 "1228800 1555200 50 47"
-    write /sys/kernel/msm_thermal/zone2 "1036800 1248000 55 53"
-    write /sys/kernel/msm_thermal/zone3 "729600 729600 65 63"
+    # Set normal thermal restrictions
+    write /sys/kernel/msm_thermal/enabled 0
+    write /sys/kernel/msm_thermal/zone0 "1401600 1824000 46 43"
+    write /sys/kernel/msm_thermal/zone1 "1324800 1824000 49 46"
+    write /sys/kernel/msm_thermal/zone2 "1324800 1632000 52 49"
+    write /sys/kernel/msm_thermal/zone3 "1324800 1555200 54 52"
+    write /sys/kernel/msm_thermal/zone4 "1324800 1478400 56 54"
+    write /sys/kernel/msm_thermal/zone5 "1324800 1401600 58 56"
+    write /sys/kernel/msm_thermal/zone6 "1324800 1324800 60 58"
+    write /sys/kernel/msm_thermal/zone7 "1190400 1248000 63 60"
+    write /sys/kernel/msm_thermal/zone8 "1036000 1036000 70 63"
+    write /sys/kernel/msm_thermal/sampling_ms 8000
     write /sys/kernel/msm_thermal/enabled 1
     
 on enable-low-power
@@ -47,15 +53,15 @@ on property:sys.boot_completed=1
     write /dev/cpuset/background/cpus 0
     write /dev/cpuset/system-background/cpus 0-2
     
-    # Set thermal restrictions  
+    # Set normal thermal restrictions
     write /sys/kernel/msm_thermal/enabled 0
-    write /sys/kernel/msm_thermal/zone0 "1478400 1920000 50 45"
-    write /sys/kernel/msm_thermal/zone1 "1478400 1824000 53 50"
-    write /sys/kernel/msm_thermal/zone2 "1401600 1824000 55 53"
-    write /sys/kernel/msm_thermal/zone3 "1324800 1824000 57 55"
-    write /sys/kernel/msm_thermal/zone4 "1324800 1708800 58 57"
-    write /sys/kernel/msm_thermal/zone5 "1324800 1555200 59 58"
-    write /sys/kernel/msm_thermal/zone6 "1324800 1324800 60 59"
+    write /sys/kernel/msm_thermal/zone0 "1401600 1824000 46 43"
+    write /sys/kernel/msm_thermal/zone1 "1324800 1824000 49 46"
+    write /sys/kernel/msm_thermal/zone2 "1324800 1632000 52 49"
+    write /sys/kernel/msm_thermal/zone3 "1324800 1555200 54 52"
+    write /sys/kernel/msm_thermal/zone4 "1324800 1478400 56 54"
+    write /sys/kernel/msm_thermal/zone5 "1324800 1401600 58 56"
+    write /sys/kernel/msm_thermal/zone6 "1324800 1324800 60 58"
     write /sys/kernel/msm_thermal/zone7 "1190400 1248000 63 60"
     write /sys/kernel/msm_thermal/zone8 "1036000 1036000 70 63"
     write /sys/kernel/msm_thermal/sampling_ms 8000
@@ -105,13 +111,13 @@ on property:sys.perf.profile=1
 
     # Set normal thermal restrictions
     write /sys/kernel/msm_thermal/enabled 0
-    write /sys/kernel/msm_thermal/zone0 "1478400 1920000 50 45"
-    write /sys/kernel/msm_thermal/zone1 "1478400 1824000 53 50"
-    write /sys/kernel/msm_thermal/zone2 "1401600 1824000 55 53"
-    write /sys/kernel/msm_thermal/zone3 "1324800 1824000 57 55"
-    write /sys/kernel/msm_thermal/zone4 "1324800 1708800 58 57"
-    write /sys/kernel/msm_thermal/zone5 "1324800 1555200 59 58"
-    write /sys/kernel/msm_thermal/zone6 "1324800 1324800 60 59"
+    write /sys/kernel/msm_thermal/zone0 "1401600 1824000 46 43"
+    write /sys/kernel/msm_thermal/zone1 "1324800 1824000 49 46"
+    write /sys/kernel/msm_thermal/zone2 "1324800 1632000 52 49"
+    write /sys/kernel/msm_thermal/zone3 "1324800 1555200 54 52"
+    write /sys/kernel/msm_thermal/zone4 "1324800 1478400 56 54"
+    write /sys/kernel/msm_thermal/zone5 "1324800 1401600 58 56"
+    write /sys/kernel/msm_thermal/zone6 "1324800 1324800 60 58"
     write /sys/kernel/msm_thermal/zone7 "1190400 1248000 63 60"
     write /sys/kernel/msm_thermal/zone8 "1036000 1036000 70 63"
     write /sys/kernel/msm_thermal/sampling_ms 8000
