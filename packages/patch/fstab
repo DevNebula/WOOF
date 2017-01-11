@@ -1,2 +1,3 @@
 # USB storage device
 /devices/platform/omap/musb-omap2430/musb-hdrc          auto                auto      defaults                                              voldmanaged=usbdisk:auto
+/dev/block/bootdevice/by-name/userdata  /data             f2fs    rw,nosuid,nodev,noatime,nodiratime,inline_xattr,discard          wait,check,encryptable=/dev/block/bootdevice/by-name/extra
